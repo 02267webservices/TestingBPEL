@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="TestingWSDL" targetNamespace="http://testing.ws" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://testing.ws" xmlns:ns0="http://types.lameduck.group8.ws.dtu" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:vprop="http://docs.oasis-open.org/wsbpel/2.0/varprop" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <types>
+    <xsd:schema targetNamespace="http://testing.ws">
+            <xsd:import namespace="http://types.lameduck.group8.ws.dtu" schemaLocation="http://localhost:8080/LameDuckService/LameDuckService?xsd=1"/>
+        </xsd:schema>
+  </types>
+  <message name="getFlightsOperationResponse">
+    <part name="output3" type="ns0:flightInfoListType">
+    </part>
+  </message>
+  <message name="testingResponse">
+    <part name="output1" type="xsd:string">
+    </part>
+  </message>
+  <message name="getFlightsOperationRequest">
+    <part name="input3" type="ns0:getFlightRequestType">
+    </part>
+    <part name="CustomerId" type="xsd:int">
+    </part>
+    <part name="ItineraryId" type="xsd:int">
+    </part>
+  </message>
+  <message name="AnotherOperationResponse">
+    <part name="output2" type="xsd:string">
+    </part>
+  </message>
+  <message name="AnotherOperationRequest">
+    <part name="input2" type="xsd:string">
+    </part>
+    <part name="CustomerId" type="xsd:int">
+    </part>
+    <part name="ItineraryId" type="xsd:int">
+    </part>
+  </message>
+  <message name="testingRequest">
+    <part name="input1" type="xsd:string">
+    </part>
+    <part name="CustomerId" type="xsd:int">
+    </part>
+    <part name="ItineraryId" type="xsd:int">
+    </part>
+  </message>
+  <portType name="TestingWSDLPortType">
+    <operation name="testing">
+      <input name="input1" message="tns:testingRequest">
+    </input>
+      <output name="output1" message="tns:testingResponse">
+    </output>
+    </operation>
+    <operation name="AnotherOperation">
+      <input name="input2" message="tns:AnotherOperationRequest">
+    </input>
+      <output name="output2" message="tns:AnotherOperationResponse">
+    </output>
+    </operation>
+    <operation name="getFlightsOperation">
+      <input name="input3" message="tns:getFlightsOperationRequest">
+    </input>
+      <output name="output3" message="tns:getFlightsOperationResponse">
+    </output>
+    </operation>
+  </portType>
+  <binding name="TestingWSDLBinding" type="tns:TestingWSDLPortType">
+    <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="testing">
+      <soap:operation/>
+      <input name="input1">
+        <soap:body use="literal" namespace="http://testing.ws"/>
+      </input>
+      <output name="output1">
+        <soap:body use="literal" namespace="http://testing.ws"/>
+      </output>
+    </operation>
+    <operation name="AnotherOperation">
+      <soap:operation/>
+      <input name="input2">
+        <soap:body use="literal" namespace="http://testing.ws"/>
+      </input>
+      <output name="output2">
+        <soap:body use="literal" namespace="http://testing.ws"/>
+      </output>
+    </operation>
+    <operation name="getFlightsOperation">
+      <soap:operation/>
+      <input name="input3">
+        <soap:body use="literal" namespace="http://testing.ws"/>
+      </input>
+      <output name="output3">
+        <soap:body use="literal" namespace="http://testing.ws"/>
+      </output>
+    </operation>
+  </binding>
+  <service name="TestingWSDLService">
+    <port name="TestingWSDLPort" binding="tns:TestingWSDLBinding">
+      <soap:address location="http://192.168.1.33:9080/TestingWSDLService/TestingWSDLPort"/>
+    </port>
+  </service>
+    <plnk:partnerLinkType name="TestingWSDL">
+        <!-- A partner link type is automatically generated when a new port type is added. Partner link types are used by BPEL processes. 
+In a BPEL process, a partner link represents the interaction between the BPEL process and a partner service. Each partner link is associated with a partner link type.
+A partner link type characterizes the conversational relationship between two services. The partner link type can have one or two roles.-->
+        <plnk:role name="TestingWSDLPortTypeRole" portType="tns:TestingWSDLPortType"/>
+    </plnk:partnerLinkType>
+    <vprop:property name="CustomerId" type="xsd:int"/>
+    <vprop:property name="ItiernarayId" type="xsd:int"/>
+    <vprop:propertyAlias messageType="tns:testingRequest" part="CustomerId" propertyName="tns:CustomerId"/>
+    <vprop:propertyAlias messageType="tns:AnotherOperationRequest" part="CustomerId" propertyName="tns:CustomerId"/>
+    <vprop:propertyAlias messageType="tns:getFlightsOperationRequest" part="CustomerId" propertyName="tns:CustomerId"/>
+    <vprop:propertyAlias messageType="tns:testingRequest" part="ItineraryId" propertyName="tns:ItiernarayId"/>
+    <vprop:propertyAlias messageType="tns:AnotherOperationRequest" part="ItineraryId" propertyName="tns:ItiernarayId"/>
+    <vprop:propertyAlias messageType="tns:getFlightsOperationRequest" part="ItineraryId" propertyName="tns:ItiernarayId"/>
+</definitions>
