@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<jbi xmlns="http://java.sun.com/xml/ns/jbi" xmlns:ns1="http://testing.ws" xmlns:ns2="http://enterprise.netbeans.org/bpel/BpelModule/bpelModule" xmlns:ns3="http://lameduck.group8.ws.dtu" version="1.0">
-    <services binding-component="true">
-        <provides endpoint-name="LameDuckPort" interface-name="ns3:LameDuckWSDLPortType" service-name="ns3:LameDuckService"/>
-        <consumes endpoint-name="TestingWSDLPort" interface-name="ns1:TestingWSDLPortType" service-name="ns1:TestingWSDLService"/>
-    </services>
-</jbi>
