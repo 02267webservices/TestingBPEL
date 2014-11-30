@@ -46,7 +46,7 @@
         <repeatUntil name="RepeatUntil1">
              <pick name="Pick1" xmlns:tns="http://testing.ws">
                 <onMessage partnerLink="PartnerLink1" operation="getFlightsOperation" portType="tns:TestingWSDLPortType" variable="GetFlightsOperationIn2">
-                    <documentation>getHotel operation</documentation>
+                    <documentation>getFlight operation</documentation>
                     <correlations>
                         <correlation set="CustomerItinerayCorrelationSet" initiate="no"/>
                     </correlations>
@@ -65,7 +65,32 @@
                                 <to>$GetFlightsIn2.input/ns0:flightDate</to>
                             </copy>
                         </assign>
-                        <invoke name="Invoke1" partnerLink="LameDuckPartnerLink2" operation="getFlights" portType="ns2:LameDuckWSDLPortType" inputVariable="GetFlightsIn2" outputVariable="GetFlightsOut2"/>
+                        <scope name="Scope1">
+                            <eventHandlers>
+                                <onAlarm>
+                                    <for>'P0Y0M0DT0H0M5.0S'</for>
+                                    <scope name="Scope2">
+                                        <variables>
+                                            <variable name="GetFlightsOperationOut" messageType="tns:getFlightsOperationResponse"/>
+                                        </variables>
+                                        <sequence name="Sequence3">
+                                            <assign name="Assign4">
+                                                <copy>
+                                                    <from>
+                                                        <literal><ns0:flightInfoListType
+xmlns:ns0="http://types.lameduck.group8.ws.dtu"
+zmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"/></literal>
+                                                    </from>
+                                                    <to variable="GetFlightsOperationOut2" part="output3"/>
+                                                </copy>
+                                            </assign>
+                                            <reply name="Reply3" partnerLink="PartnerLink1" operation="getFlightsOperation" portType="tns:TestingWSDLPortType" variable="GetFlightsOperationOut"/>
+                                        </sequence>
+                                    </scope>
+                                </onAlarm>
+                            </eventHandlers>
+                            <invoke name="Invoke1" partnerLink="LameDuckPartnerLink2" operation="getFlights" portType="ns2:LameDuckWSDLPortType" inputVariable="GetFlightsIn2" outputVariable="GetFlightsOut2"></invoke>
+                        </scope>
                         <assign name="Assign3">
                             <copy>
                                 <from>$GetFlightsOut2.output/ns0:flightInformation</from>
