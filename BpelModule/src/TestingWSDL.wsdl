@@ -116,37 +116,37 @@
         </operation>
         <operation name="addFlightOperation">
             <soap:operation/>
-            <input name="input4">
+            <input name="input12">
                 <soap:body use="literal" namespace="http://testing.ws"/>
             </input>
-            <output name="output4">
+            <output name="output12">
                 <soap:body use="literal" namespace="http://testing.ws"/>
             </output>
         </operation>
         <operation name="bookItineraryOperation">
             <soap:operation/>
-            <input name="input6">
+            <input name="input13">
                 <soap:body use="literal" namespace="http://testing.ws"/>
             </input>
-            <output name="output6">
+            <output name="output13">
                 <soap:body use="literal" namespace="http://testing.ws"/>
             </output>
         </operation>
         <operation name="cancelItineraryOperation">
             <soap:operation/>
-            <input name="input7">
+            <input name="input14">
                 <soap:body use="literal" namespace="http://testing.ws"/>
             </input>
-            <output name="output7">
+            <output name="output14">
                 <soap:body use="literal" namespace="http://testing.ws"/>
             </output>
         </operation>
         <operation name="getItineraryOperation">
             <soap:operation/>
-            <input name="input8">
+            <input name="input15">
                 <soap:body use="literal" namespace="http://testing.ws"/>
             </input>
-            <output name="output8">
+            <output name="output15">
                 <soap:body use="literal" namespace="http://testing.ws"/>
             </output>
         </operation>
@@ -164,14 +164,16 @@ A partner link type characterizes the conversational relationship between two se
     </plnk:partnerLinkType>
     <vprop:property name="CustomerId" type="xsd:int"/>
     <vprop:property name="ItiernarayId" type="xsd:int"/>
-    <vprop:propertyAlias propertyName="tns:CustomerId" messageType="tns:getFlightsOperationRequest" part="CustomerId"/>
-    <vprop:propertyAlias propertyName="tns:ItiernarayId" messageType="tns:getFlightsOperationRequest" part="ItineraryId"/>
+    
     <vprop:propertyAlias propertyName="tns:CustomerId" messageType="tns:createItineraryOperationRequest" part="customerId"/>
-    <vprop:propertyAlias propertyName="tns:ItiernarayId" messageType="tns:createItineraryOperationRequest" part="itineraryId"/>
+    <vprop:propertyAlias propertyName="tns:CustomerId" messageType="tns:getFlightsOperationRequest" part="CustomerId"/>
     <vprop:propertyAlias propertyName="tns:CustomerId" messageType="tns:addFlightOperationRequest" part="customerId"/>
     <vprop:propertyAlias propertyName="tns:CustomerId" messageType="tns:bookItineraryOperationRequest" part="customerId"/>
-    <vprop:propertyAlias propertyName="tns:CustomerId" messageType="tns:cancelItineraryOperationRequest" part="customerId"/>
     <vprop:propertyAlias propertyName="tns:CustomerId" messageType="tns:getItineraryOperationRequest" part="customerId"/>
+    <vprop:propertyAlias propertyName="tns:CustomerId" messageType="tns:cancelItineraryOperationRequest" part="customerId"/>
+    
+    <vprop:propertyAlias propertyName="tns:ItiernarayId" messageType="tns:createItineraryOperationRequest" part="itineraryId"/>
+    <vprop:propertyAlias propertyName="tns:ItiernarayId" messageType="tns:getFlightsOperationRequest" part="ItineraryId"/>
     <vprop:propertyAlias propertyName="tns:ItiernarayId" messageType="tns:addFlightOperationRequest" part="itineraryId"/>
     <vprop:propertyAlias propertyName="tns:ItiernarayId" messageType="tns:bookItineraryOperationRequest" part="itineraryId"/>
     <vprop:propertyAlias propertyName="tns:ItiernarayId" messageType="tns:getItineraryOperationRequest" part="itineraryId"/>

@@ -36,6 +36,7 @@ public class JUnitTestTesting {
         }catch (Exception ex) {
         }
         
+        
         FlightInfoListType result = getFlightsOperation(input,1,1);
         
         List<FlightInfoType> flightsInfo = result.getFlightInformation();
@@ -54,6 +55,12 @@ public class JUnitTestTesting {
             }
         }
         
+        if (!flightsInfo.isEmpty()) {
+        
+            String status = addFlightOperation(1,1,"ABC1234");
+        
+            System.out.println("Come on: " +status);
+        }
     }
 
     private static String createItineraryOperation(int customerId, int itineraryId) {
@@ -66,6 +73,12 @@ public class JUnitTestTesting {
         someother.ws.TestingWSDLService service = new someother.ws.TestingWSDLService();
         someother.ws.TestingWSDLPortType port = service.getTestingWSDLPort();
         return port.getFlightsOperation(queryFlights, customerId, itineraryId);
+    }
+
+    private static String addFlightOperation(int customerId, int itineraryId, java.lang.String bookingNumber) {
+        someother.ws.TestingWSDLService service = new someother.ws.TestingWSDLService();
+        someother.ws.TestingWSDLPortType port = service.getTestingWSDLPort();
+        return port.addFlightOperation(customerId, itineraryId, bookingNumber);
     }
 
     

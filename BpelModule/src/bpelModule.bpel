@@ -7,9 +7,15 @@
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
     xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
     xmlns:sxt="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Trace" 
-    xmlns:sxed="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Editor2"
+    xmlns:sxed="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Editor"
+    xmlns:sxed2="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Editor2"
     xmlns:sxat="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Attachment"
-    xmlns:sxeh="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/ErrorHandling" xmlns:ns0="http://types.lameduck.group8.ws.dtu" xmlns:sxxf="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/XPathFunctions" xmlns:ns1="http://testing.ws" xmlns:ns2="http://lameduck.group8.ws.dtu">
+    xmlns:sxeh="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/ErrorHandling" 
+    xmlns:ns0="http://types.lameduck.group8.ws.dtu" 
+    xmlns:sxxf="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/XPathFunctions" 
+    
+    xmlns:ns1="http://testing.ws" 
+    xmlns:ns2="http://lameduck.group8.ws.dtu">
     <import namespace="http://testing.ws" location="TestingWSDL.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
     <import namespace="http://enterprise.netbeans.org/bpel/LameDuckServiceWrapper" location="LameDuckServiceWrapper.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
     <import namespace="http://lameduck.group8.ws.dtu" location="http://localhost:8080/LameDuckService/LameDuckService?wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
@@ -21,7 +27,22 @@
         <variable name="AddFlightOperationOut" messageType="ns1:addFlightOperationResponse"/>
         <variable name="AddFlightOperationIn" messageType="ns1:addFlightOperationRequest"/>
         <variable name="flightArrayLength" type="xs:int"/>
-        <variable name="currentItinerary" type="ns1:itineraryType"/>
+        <variable name="hotelArrayLength" type="xs:int"/>
+        <variable name="currentItinerary" type="ns1:itineraryType">
+            <sxed2:editor>
+                <sxed2:predicate path="$currentItinerary/hotelBookings[$hotelArrayLength]" source="to"/>
+                <sxed2:predicate path="$currentItinerary/flightBookings[$flightArrayLength]" source="to"/>
+                <sxed2:predicate path="$currentItinerary/flightBookings[$ForEach1Counter]" source="from"></sxed2:predicate>
+                <sxed2:predicate path="$currentItinerary/flightBookings[$ForEach1Counter]" source="to"/>
+                <sxed2:predicate path="$currentItinerary/hotelBookings[$ForEach2Counter]" source="from"/>
+                <sxed2:predicate path="$currentItinerary/hotelBookings[$ForEach2Counter]" source="to"/>
+                <sxed2:predicate path="$currentItinerary/flightBookings[$ForEach3Counter]" source="to"/>
+                <sxed2:predicate path="$currentItinerary/flightBookings[$ForEach3Counter]" source="from"/>
+                <sxed2:predicate path="$currentItinerary/hotelBookings[$ForEach4Counter]" source="from"/>
+                <sxed2:predicate path="$currentItinerary/hotelBookings[$ForEach4Counter]" source="to"/>
+            </sxed2:editor>
+        </variable>
+        
         <variable name="processTerminated" type="xs:boolean"/>
         <variable name="planningDone" type="xs:boolean"/>
         <variable name="CreateItineraryOperationOut" messageType="ns1:createItineraryOperationResponse"/>
@@ -57,6 +78,14 @@
             <copy>
                 <from>'Itinerary created by Group8'</from>
                 <to variable="CreateItineraryOperationOut" part="status"/>
+            </copy>
+            <copy>
+                <from>0</from>
+                <to variable="flightArrayLength"/>
+            </copy>
+            <copy>
+                <from>0</from>
+                <to variable="hotelArrayLength"/>
             </copy>
         </assign>
         <reply name="Reply3" partnerLink="PartnerLink1" operation="createItineraryOperation" portType="ns1:TestingWSDLPortType" variable="CreateItineraryOperationOut"/>
@@ -95,6 +124,7 @@
                     </sequence>
                 </onMessage>
                  <onMessage partnerLink="PartnerLink1" operation="addFlightOperation" portType="tns:TestingWSDLPortType" variable="AddFlightOperationIn">
+                     <documentation>addFlight operation ftw</documentation>
                      <correlations>
                          <correlation set="CustomerItinerayCorrelationSet" initiate="no"/>
                      </correlations>
@@ -102,9 +132,47 @@
                          <if name="If2">
                              <condition>not($planningDone)</condition>
                              <sequence name="Sequence4">
-                                 <assign name="Assign6"/>
+                                 <assign name="Assign9">
+                                     <copy>
+                                         <from>$flightArrayLength + 1</from>
+                                         <to variable="flightArrayLength"/>
+                                     </copy>
+                                 </assign>
+                                 <assign name="Assign6">
+                                     <copy>
+                                         <from>'Flight added to itinerary.'</from>
+                                         <to variable="AddFlightOperationOut" part="status"/>
+                                     </copy>
+                                     <copy>
+                                                      <from variable="AddFlightOperationIn" part="bookingNumber"/>
+                                                           <to>$currentItinerary/flightBookings[$flightArrayLength]/bookingNumber
+                                            
+                                                               <sxed2:editor>
+                                                                    <sxed2:predicate path="$currentItinerary/flightBookings[$flightArrayLength]" source="to"/>
+                                                               </sxed2:editor>
+                                                           </to>
+                                     </copy>
+                                     <copy>
+                                         <from>sxxf:date-less-than($GetFlightsIn2.input/ns0:flightDate, $currentItinerary/firstItineraryDate)</from>
+                                         <to variable="shouldChangeStartDate"/>
+                                     </copy>
+                                     <copy>
+                                         <from>'unconfirmed'</from>
+                                         <to>$currentItinerary/flightBookings[$flightArrayLength]/bookingStatus
+                                             <sxed2:editor>
+                                                 <sxed2:predicate path="$currentItinerary/flightBookings[$flightArrayLength]" source="to"/>
+                                             </sxed2:editor>
+                                         </to>
+                                     </copy>
+                                 </assign>
                                  <if name="If1">
-                                     <assign name="Assign7"/>
+                                     <condition>$shouldChangeStartDate</condition>
+                                     <assign name="Assign7">
+                                         <copy>
+                                             <from>$GetFlightsIn2.input/ns0:flightDate</from>
+                                             <to>$currentItinerary/firstItineraryDate</to>
+                                         </copy>
+                                     </assign>
                                  </if>
                              </sequence>
                              <else>
@@ -120,7 +188,7 @@
                      </sequence>
                  </onMessage>
              </pick>
-            <condition>false()</condition>
+            <condition>$processTerminated</condition>
         </repeatUntil>
     </sequence>
 </process>
