@@ -6,79 +6,148 @@
     <types>
         <xsd:schema targetNamespace="http://testing.ws">
             <xsd:import schemaLocation="http://localhost:8080/LameDuckService/LameDuckService?xsd=1" namespace="http://types.lameduck.group8.ws.dtu"/>
+            <xsd:complexType name="itineraryType">
+                <xsd:sequence>
+                    <xsd:element name="hotelBookings" type="tns:bookingItemType" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+                    <xsd:element name="flightBookings" type="tns:bookingItemType" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+                    <xsd:element name="firstItineraryDate" type="xsd:date"></xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="bookingItemType">
+                <xsd:sequence>
+                    <xsd:element name="bookingStatus" type="xsd:string"></xsd:element>
+                    <xsd:element name="bookingNumber" type="xsd:string"></xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
         </xsd:schema>
     </types>
-    <message name="testingRequest">
-        <part name="input1" type="xsd:string"/>
-        <part name="CustomerId" type="xsd:int"/>
-        <part name="ItineraryId" type="xsd:int"/>
+    <message name="createItineraryOperationRequest">
+        <part name="customerId" type="xsd:int"/>
+        <part name="itineraryId" type="xsd:int"/>
     </message>
-    <message name="testingResponse">
-        <part name="output1" type="xsd:string"/>
-    </message>
-    <message name="AnotherOperationRequest">
-        <part name="input2" type="xsd:string"/>
-        <part name="CustomerId" type="xsd:int"/>
-        <part name="ItineraryId" type="xsd:int"/>
-    </message>
-    <message name="AnotherOperationResponse">
-        <part name="output2" type="xsd:string"/>
+    <message name="createItineraryOperationResponse">
+        <part name="status" type="xsd:string"/>
     </message>
     <message name="getFlightsOperationRequest">
-        <part name="input3" type="ns0:getFlightRequestType"/>
+        <part name="queryFlights" type="ns0:getFlightRequestType"/>
         <part name="CustomerId" type="xsd:int"/>
         <part name="ItineraryId" type="xsd:int"/>
     </message>
     <message name="getFlightsOperationResponse">
-        <part name="output3" type="ns0:flightInfoListType"/>
+        <part name="fligtList" type="ns0:flightInfoListType"/>
+    </message>
+    <message name="addFlightOperationRequest">
+        <part name="customerId" type="xsd:int"/>
+        <part name="itineraryId" type="xsd:int"/>
+        <part name="bookingNumber" type="xsd:string"/>
+    </message>
+    <message name="addFlightOperationResponse">
+        <part name="status" type="xsd:string"/>
+    </message>
+    <message name="bookItineraryOperationRequest">
+        <part name="customerId" type="xsd:int"/>
+        <part name="itineraryId" type="xsd:int"/>
+        <part name="creditCardInfo" type="ns0:creditCardInfoType"/>
+    </message>
+    <message name="bookItineraryOperationResponse">
+        <part name="status" type="xsd:string"/>
+    </message>
+    <message name="cancelItineraryOperationRequest">
+        <part name="customerId" type="xsd:int"/>
+        <part name="itineraryId" type="xsd:int"/>
+    </message>
+    <message name="cancelItineraryOperationResponse">
+        <part name="status" type="xsd:string"/>
+    </message>
+    <message name="getItineraryOperationRequest">
+        <part name="customerId" type="xsd:int"/>
+        <part name="itineraryId" type="xsd:int"/>
+    </message>
+    <message name="getItineraryOperationResponse">
+        <part name="responseItinerary" type="tns:itineraryType"/>
     </message>
     <portType name="TestingWSDLPortType">
-        <operation name="testing">
-            <input name="input1" message="tns:testingRequest"/>
-            <output name="output1" message="tns:testingResponse"/>
-        </operation>
-        <operation name="AnotherOperation">
-            <input name="input2" message="tns:AnotherOperationRequest"/>
-            <output name="output2" message="tns:AnotherOperationResponse"/>
+        <operation name="createItineraryOperation">
+            <input name="input10" message="tns:createItineraryOperationRequest"/>
+            <output name="output10" message="tns:createItineraryOperationResponse"/>
         </operation>
         <operation name="getFlightsOperation">
-            <input name="input3" message="tns:getFlightsOperationRequest"/>
-            <output name="output3" message="tns:getFlightsOperationResponse"/>
+            <input name="input11" message="tns:getFlightsOperationRequest"/>
+            <output name="output11" message="tns:getFlightsOperationResponse"/>
+        </operation>
+        <operation name="addFlightOperation">
+            <input name="input12" message="tns:addFlightOperationRequest"/>
+            <output name="output12" message="tns:addFlightOperationResponse"/>
+        </operation>
+        <operation name="bookItineraryOperation">
+            <input name="input13" message="tns:bookItineraryOperationRequest"/>
+            <output name="output13" message="tns:bookItineraryOperationResponse"/>
+        </operation>
+        <operation name="cancelItineraryOperation">
+            <input name="input14" message="tns:cancelItineraryOperationRequest"/>
+            <output name="output14" message="tns:cancelItineraryOperationResponse"/>
+        </operation>
+        <operation name="getItineraryOperation">
+            <input name="input15" message="tns:getItineraryOperationRequest"/>
+            <output name="output15" message="tns:getItineraryOperationResponse"/>
         </operation>
     </portType>
     <binding name="TestingWSDLBinding" type="tns:TestingWSDLPortType">
         <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
-        <operation name="testing">
+        <operation name="createItineraryOperation">
             <soap:operation/>
-            <input name="input1">
-                <soap:body use="literal" 
-                           namespace="http://testing.ws"/>
+            <input name="input10">
+                <soap:body use="literal" namespace="http://testing.ws"/>
             </input>
-            <output name="output1">
-                <soap:body use="literal" 
-                           namespace="http://testing.ws"/>
-            </output>
-        </operation>
-        <operation name="AnotherOperation">
-            <soap:operation/>
-            <input name="input2">
-                <soap:body use="literal" 
-                           namespace="http://testing.ws"/>
-            </input>
-            <output name="output2">
-                <soap:body use="literal" 
-                           namespace="http://testing.ws"/>
+            <output name="output10">
+                <soap:body use="literal" namespace="http://testing.ws"/>
             </output>
         </operation>
         <operation name="getFlightsOperation">
             <soap:operation/>
-            <input name="input3">
+            <input name="input11">
                 <soap:body use="literal" 
                            namespace="http://testing.ws"/>
             </input>
-            <output name="output3">
+            <output name="output11">
                 <soap:body use="literal" 
                            namespace="http://testing.ws"/>
+            </output>
+        </operation>
+        <operation name="addFlightOperation">
+            <soap:operation/>
+            <input name="input4">
+                <soap:body use="literal" namespace="http://testing.ws"/>
+            </input>
+            <output name="output4">
+                <soap:body use="literal" namespace="http://testing.ws"/>
+            </output>
+        </operation>
+        <operation name="bookItineraryOperation">
+            <soap:operation/>
+            <input name="input6">
+                <soap:body use="literal" namespace="http://testing.ws"/>
+            </input>
+            <output name="output6">
+                <soap:body use="literal" namespace="http://testing.ws"/>
+            </output>
+        </operation>
+        <operation name="cancelItineraryOperation">
+            <soap:operation/>
+            <input name="input7">
+                <soap:body use="literal" namespace="http://testing.ws"/>
+            </input>
+            <output name="output7">
+                <soap:body use="literal" namespace="http://testing.ws"/>
+            </output>
+        </operation>
+        <operation name="getItineraryOperation">
+            <soap:operation/>
+            <input name="input8">
+                <soap:body use="literal" namespace="http://testing.ws"/>
+            </input>
+            <output name="output8">
+                <soap:body use="literal" namespace="http://testing.ws"/>
             </output>
         </operation>
     </binding>
@@ -95,10 +164,16 @@ A partner link type characterizes the conversational relationship between two se
     </plnk:partnerLinkType>
     <vprop:property name="CustomerId" type="xsd:int"/>
     <vprop:property name="ItiernarayId" type="xsd:int"/>
-    <vprop:propertyAlias propertyName="tns:CustomerId" messageType="tns:testingRequest" part="CustomerId"/>
-    <vprop:propertyAlias propertyName="tns:CustomerId" messageType="tns:AnotherOperationRequest" part="CustomerId"/>
     <vprop:propertyAlias propertyName="tns:CustomerId" messageType="tns:getFlightsOperationRequest" part="CustomerId"/>
-    <vprop:propertyAlias propertyName="tns:ItiernarayId" messageType="tns:testingRequest" part="ItineraryId"/>
-    <vprop:propertyAlias propertyName="tns:ItiernarayId" messageType="tns:AnotherOperationRequest" part="ItineraryId"/>
     <vprop:propertyAlias propertyName="tns:ItiernarayId" messageType="tns:getFlightsOperationRequest" part="ItineraryId"/>
+    <vprop:propertyAlias propertyName="tns:CustomerId" messageType="tns:createItineraryOperationRequest" part="customerId"/>
+    <vprop:propertyAlias propertyName="tns:ItiernarayId" messageType="tns:createItineraryOperationRequest" part="itineraryId"/>
+    <vprop:propertyAlias propertyName="tns:CustomerId" messageType="tns:addFlightOperationRequest" part="customerId"/>
+    <vprop:propertyAlias propertyName="tns:CustomerId" messageType="tns:bookItineraryOperationRequest" part="customerId"/>
+    <vprop:propertyAlias propertyName="tns:CustomerId" messageType="tns:cancelItineraryOperationRequest" part="customerId"/>
+    <vprop:propertyAlias propertyName="tns:CustomerId" messageType="tns:getItineraryOperationRequest" part="customerId"/>
+    <vprop:propertyAlias propertyName="tns:ItiernarayId" messageType="tns:addFlightOperationRequest" part="itineraryId"/>
+    <vprop:propertyAlias propertyName="tns:ItiernarayId" messageType="tns:bookItineraryOperationRequest" part="itineraryId"/>
+    <vprop:propertyAlias propertyName="tns:ItiernarayId" messageType="tns:getItineraryOperationRequest" part="itineraryId"/>
+    <vprop:propertyAlias propertyName="tns:ItiernarayId" messageType="tns:cancelItineraryOperationRequest" part="itineraryId"/>
 </definitions>

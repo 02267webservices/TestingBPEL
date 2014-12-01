@@ -21,7 +21,7 @@ public class JUnitTestTesting {
     @Test
     public void testingSomething(){
         
-        String output = testing("testing fuck ftw",1,1);
+        String output = createItineraryOperation(1,1);
         System.out.println("Come on: " +output);
         
         //Testing getFlights
@@ -56,29 +56,20 @@ public class JUnitTestTesting {
         
     }
 
-    private static String anotherOperation(java.lang.String input2, int customerId, int itineraryId) {
+    private static String createItineraryOperation(int customerId, int itineraryId) {
         someother.ws.TestingWSDLService service = new someother.ws.TestingWSDLService();
         someother.ws.TestingWSDLPortType port = service.getTestingWSDLPort();
-        return port.anotherOperation(input2, customerId, itineraryId);
+        return port.createItineraryOperation(customerId, itineraryId);
     }
 
-    private static FlightInfoListType getFlightsOperation(someother.ws.GetFlightRequestType input3, int customerId, int itineraryId) {
+    private static FlightInfoListType getFlightsOperation(someother.ws.GetFlightRequestType queryFlights, int customerId, int itineraryId) {
         someother.ws.TestingWSDLService service = new someother.ws.TestingWSDLService();
         someother.ws.TestingWSDLPortType port = service.getTestingWSDLPort();
-        return port.getFlightsOperation(input3, customerId, itineraryId);
-    }
-
-    private static String testing(java.lang.String input1, int customerId, int itineraryId) {
-        someother.ws.TestingWSDLService service = new someother.ws.TestingWSDLService();
-        someother.ws.TestingWSDLPortType port = service.getTestingWSDLPort();
-        return port.testing(input1, customerId, itineraryId);
+        return port.getFlightsOperation(queryFlights, customerId, itineraryId);
     }
 
     
-
-    
-    
-    
+ 
 
     
 }

@@ -14,92 +14,111 @@
     <import namespace="http://enterprise.netbeans.org/bpel/LameDuckServiceWrapper" location="LameDuckServiceWrapper.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
     <import namespace="http://lameduck.group8.ws.dtu" location="http://localhost:8080/LameDuckService/LameDuckService?wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
     <partnerLinks>
-        <partnerLink name="LameDuckPartnerLink2" xmlns:tns="http://enterprise.netbeans.org/bpel/LameDuckServiceWrapper" partnerLinkType="tns:LameDuckWSDLLinkType" partnerRole="LameDuckWSDLRole"/>
+        <partnerLink name="LameDuckPartnerLink2" xmlns:tns="http://enterprise.netbeans.org/bpel/LameDuckServiceWrapper" partnerLinkType="tns:LameDuckWSDLLinkType2" partnerRole="LameDuckWSDLRole"/>
         <partnerLink name="PartnerLink1" xmlns:tns="http://testing.ws" partnerLinkType="tns:TestingWSDL" myRole="TestingWSDLPortTypeRole"/>
     </partnerLinks>
     <variables>
+        <variable name="AddFlightOperationOut" messageType="ns1:addFlightOperationResponse"/>
+        <variable name="AddFlightOperationIn" messageType="ns1:addFlightOperationRequest"/>
+        <variable name="flightArrayLength" type="xs:int"/>
+        <variable name="currentItinerary" type="ns1:itineraryType"/>
+        <variable name="processTerminated" type="xs:boolean"/>
+        <variable name="planningDone" type="xs:boolean"/>
+        <variable name="CreateItineraryOperationOut" messageType="ns1:createItineraryOperationResponse"/>
+        <variable name="CreateItineraryOperationIn" messageType="ns1:createItineraryOperationRequest"/>
         <variable name="GetFlightsOperationOut2" xmlns:tns="http://testing.ws" messageType="ns1:getFlightsOperationResponse"/>
         <variable name="GetFlightsOut2" xmlns:tns="http://lameduck.group8.ws.dtu" messageType="ns2:getFlightsResponse"/>
         <variable name="GetFlightsIn2" xmlns:tns="http://lameduck.group8.ws.dtu" messageType="ns2:getFlightsRequest"/>
         <variable name="GetFlightsOperationIn2" xmlns:tns="http://testing.ws" messageType="ns1:getFlightsOperationRequest"/>
-        <variable name="TestingOut1" xmlns:tns="http://testing.ws" messageType="ns1:testingResponse"/>
-        <variable name="TestingIn1" xmlns:tns="http://testing.ws" messageType="ns1:testingRequest"/>
-        <variable name="AnotherOperationOut" xmlns:tns="http://testing.ws" messageType="tns:AnotherOperationResponse"/>
-        <variable name="AnotherOperationIn" xmlns:tns="http://testing.ws" messageType="tns:AnotherOperationRequest"/>
+        <variable name="shouldChangeStartDate" type="xs:boolean"/>
     </variables>
     <correlationSets>
         <correlationSet name="CustomerItinerayCorrelationSet" properties="ns1:ItiernarayId ns1:CustomerId"/>
     </correlationSets>
     <sequence name="Sequence1">
-        <receive name="Receive1" createInstance="yes" partnerLink="PartnerLink1" operation="testing" portType="ns1:TestingWSDLPortType" variable="TestingIn1">
+        <receive name="Receive1" createInstance="yes" partnerLink="PartnerLink1" operation="createItineraryOperation" portType="ns1:TestingWSDLPortType" variable="CreateItineraryOperationIn">
             <correlations>
                 <correlation set="CustomerItinerayCorrelationSet" initiate="yes"/>
             </correlations>
         </receive>
-        <assign name="Assign1">
+        <assign name="Assign4">
             <copy>
-                <from variable="TestingIn1" part="input1"/>
-                <to variable="TestingOut1" part="output1"/>
+                <from>false()</from>
+                <to variable="processTerminated"/>
+            </copy>
+            <copy>
+                <from>false()</from>
+                <to variable="planningDone"/>
+            </copy>
+            <copy>
+                <from>'2100-00-00T00:00:0.0+01:00'</from>
+                <to>$currentItinerary/firstItineraryDate</to>
+            </copy>
+            <copy>
+                <from>'Itinerary created by Group8'</from>
+                <to variable="CreateItineraryOperationOut" part="status"/>
             </copy>
         </assign>
-        <reply name="Reply1" partnerLink="PartnerLink1" operation="testing" portType="ns1:TestingWSDLPortType" variable="TestingOut1"/>
+        <reply name="Reply3" partnerLink="PartnerLink1" operation="createItineraryOperation" portType="ns1:TestingWSDLPortType" variable="CreateItineraryOperationOut"/>
         <repeatUntil name="RepeatUntil1">
              <pick name="Pick1" xmlns:tns="http://testing.ws">
                 <onMessage partnerLink="PartnerLink1" operation="getFlightsOperation" portType="tns:TestingWSDLPortType" variable="GetFlightsOperationIn2">
-                    <documentation>getFlight operation</documentation>
+                    <documentation>getFlight operation implementation</documentation>
                     <correlations>
                         <correlation set="CustomerItinerayCorrelationSet" initiate="no"/>
                     </correlations>
                     <sequence name="Sequence2">
                         <assign name="Assign2">
                             <copy>
-                                <from>$GetFlightsOperationIn2.input3/ns0:flightStartAirport</from>
+                                <from>$GetFlightsOperationIn2.queryFlights/ns0:flightStartAirport</from>
                                 <to>$GetFlightsIn2.input/ns0:flightStartAirport</to>
                             </copy>
                             <copy>
-                                <from>$GetFlightsOperationIn2.input3/ns0:flightDestinationAirport</from>
+                                <from>$GetFlightsOperationIn2.queryFlights/ns0:flightDestinationAirport</from>
                                 <to>$GetFlightsIn2.input/ns0:flightDestinationAirport</to>
                             </copy>
                             <copy>
-                                <from>$GetFlightsOperationIn2.input3/ns0:flightDate</from>
+                                <from>$GetFlightsOperationIn2.queryFlights/ns0:flightDate</from>
                                 <to>$GetFlightsIn2.input/ns0:flightDate</to>
                             </copy>
                         </assign>
                         <scope name="Scope1">
-                            <eventHandlers>
-                                <onAlarm>
-                                    <for>'P0Y0M0DT0H0M5.0S'</for>
-                                    <scope name="Scope2">
-                                        <variables>
-                                            <variable name="GetFlightsOperationOut" messageType="tns:getFlightsOperationResponse"/>
-                                        </variables>
-                                        <sequence name="Sequence3">
-                                            <assign name="Assign4">
-                                                <copy>
-                                                    <from>
-                                                        <literal><ns0:flightInfoListType
-xmlns:ns0="http://types.lameduck.group8.ws.dtu"
-zmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"/></literal>
-                                                    </from>
-                                                    <to variable="GetFlightsOperationOut2" part="output3"/>
-                                                </copy>
-                                            </assign>
-                                            <reply name="Reply3" partnerLink="PartnerLink1" operation="getFlightsOperation" portType="tns:TestingWSDLPortType" variable="GetFlightsOperationOut"/>
-                                        </sequence>
-                                    </scope>
-                                </onAlarm>
-                            </eventHandlers>
                             <invoke name="Invoke1" partnerLink="LameDuckPartnerLink2" operation="getFlights" portType="ns2:LameDuckWSDLPortType" inputVariable="GetFlightsIn2" outputVariable="GetFlightsOut2"></invoke>
                         </scope>
-                        <assign name="Assign3">
+                        <assign name="Assign5">
                             <copy>
                                 <from>$GetFlightsOut2.output/ns0:flightInformation</from>
-                                <to>$GetFlightsOperationOut2.output3/ns0:flightInformation</to>
+                                <to>$GetFlightsOperationOut2.fligtList/ns0:flightInformation</to>
                             </copy>
                         </assign>
                         <reply name="Reply2" partnerLink="PartnerLink1" operation="getFlightsOperation" portType="ns1:TestingWSDLPortType" variable="GetFlightsOperationOut2"/>
                     </sequence>
                 </onMessage>
+                 <onMessage partnerLink="PartnerLink1" operation="addFlightOperation" portType="tns:TestingWSDLPortType" variable="AddFlightOperationIn">
+                     <correlations>
+                         <correlation set="CustomerItinerayCorrelationSet" initiate="no"/>
+                     </correlations>
+                     <sequence name="Sequence3">
+                         <if name="If2">
+                             <condition>not($planningDone)</condition>
+                             <sequence name="Sequence4">
+                                 <assign name="Assign6"/>
+                                 <if name="If1">
+                                     <assign name="Assign7"/>
+                                 </if>
+                             </sequence>
+                             <else>
+                                 <assign name="Assign8">
+                                     <copy>
+                                         <from>'Planning phase done: Flight not added!'</from>
+                                         <to variable="AddFlightOperationOut" part="status"/>
+                                     </copy>
+                                 </assign>
+                             </else>
+                         </if>
+                         <reply name="Reply4" partnerLink="PartnerLink1" operation="addFlightOperation" portType="tns:TestingWSDLPortType" variable="AddFlightOperationOut"/>
+                     </sequence>
+                 </onMessage>
              </pick>
             <condition>false()</condition>
         </repeatUntil>

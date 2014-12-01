@@ -9,4 +9,7 @@
     <plnk:partnerLinkType name="LameDuckWSDLLinkType">
         <plnk:role name="LameDuckWSDLRole" portType="ns:LameDuckWSDLPortType"/>
     </plnk:partnerLinkType>
+    <plnk:partnerLinkType name="LameDuckWSDLLinkType2">
+        <plnk:role name="LameDuckWSDLRole" portType="ns:LameDuckWSDLPortType"/>
+    </plnk:partnerLinkType>
 </definitions>
